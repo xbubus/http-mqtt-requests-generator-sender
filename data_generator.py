@@ -8,9 +8,11 @@ import argparse
 
 class dataGenerator():
 
-    def __init__(self,filename,http_out,mqtt_out,http=False,mqtt=False):
+    def __init__(self,filename,http_out,mqtt_out,http=False,mqtt=False,rand=0):
         self.loadTasks(filename)
-        
+        self.http_plot=[]
+        self.mqtt_plot=[]
+        self.rand=rand
         if http:
             self.generate(http=True)
             self.merged=self.mergeData(self.getTasks()[0])
@@ -34,7 +36,9 @@ class dataGenerator():
                 self.data=d
                 self.result=self.generateProbabilityDenistyFunction()
                 self.mappedY=self.mapRequestsPerSecound(self.result[1],d["tasks"])
+                self.printNumOfReq()
                 self.mappedX=self.mapValues(self.result[0],d["time"])
+                self.http_plot.append((self.mappedX,self.mappedY,(d["url"],d["method"])))
                 self.generateRequestsData(self.mappedX,self.mappedY)
                 self.httpTasks.append(self.dictR)
                 self.rOff+=1
@@ -45,13 +49,13 @@ class dataGenerator():
                 self.data=d
                 self.result=self.generateProbabilityDenistyFunction()
                 self.mappedY=self.mapRequestsPerSecound(self.result[1],d["tasks"])
+                self.printNumOfReq()
                 self.mappedX=self.mapValues(self.result[0],d["time"])
+                self.mqtt_plot.append((self.mappedX,self.mappedY,(d["url"],d["topic"])))
                 self.generateMQTTdata(self.mappedX,self.mappedY)
                 self.mqttTasks.append(self.dictM)
                 self.mOff+=1
 
-    def getPlotData(self):
-        return self.result[0],self.result[1],self.mappedX,self.mappedY
     def getTasks(self):
         return self.httpTasks,self.mqttTasks
     def printNumOfReq(self):
@@ -86,7 +90,7 @@ class dataGenerator():
         sum=0
         for val in values:
             sum+=val
-        return [round(val*requestNumber/sum) for val in values] 
+        return [round(val*requestNumber/sum * random.uniform(1-self.rand/100,1+self.rand/100)) for val in values] 
 
     def generateRequestsData(self,x,y):
         self.dictR={}
@@ -108,22 +112,57 @@ class dataGenerator():
         with open(filename, 'w') as outfile:
             json.dump(self.sortedDict, outfile)
         print("Generated and saved to: ",filename)
+    def getPlotData(self):
+        return self.http_plot,self.mqtt_plot
 
+def show_plots(data):
+    http=data[0]
+    mqtt=data[1]
+    httpSize=0
+    mqttSize=0
+    for _ in http:  httpSize+=1
+    for _ in mqtt: mqttSize+=1
+    if not httpSize and not mqttSize: 
+        print("Nothing to show on plot")
+        return
+    if httpSize:
+        fig1,axs = plt.subplots(httpSize,1,sharex=True,sharey=True)
+        i=0
+        for d in http:
+            axs[i].plot(d[0],d[1])
+            s=0
+            axs[i].set_title(d[2],fontsize=5)
+            i+=1
+    if mqttSize:
+        fig2,axs = plt.subplots(mqttSize,1,sharex=True,sharey=True)
+        i=0
+        for d in mqtt:
+            axs[i].plot(d[0],d[1])
+            s=0
+            axs[i].set_title(d[2],fontsize=5)
+            i+=1
+    plt.show()
 
 if __name__ =='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i','--input-file',type=str,help="JSON input file with requests")
-    parser.add_argument('-gh','--generate-http',type=bool,default=False,help="Generate http requests")
-    parser.add_argument('-gm','--generate-mqtt',type=bool,default=False,help="Generate mqtt requests")
+    parser.add_argument('-gh','--generate-http',action='store_true',help="Generate http requests")
+    parser.add_argument('-gm','--generate-mqtt',action='store_true',help="Generate mqtt requests")
     parser.add_argument('-oh','--http-output-file',type=str,default="http_out.json",help="JSON output file with http requests")
     parser.add_argument('-om','--mqtt-output-file',type=str,default="mqtt_out.json",help="JSON output file with mqtt requests")
+    parser.add_argument('-p','--plot',action='store_true',help="Show plots")
+    parser.add_argument('-r','--random',type=int,default=0,help="Randomize requests output by given number (-r 5 = +-[0,5]%)")
 
     FLAGS,unparsed=parser.parse_known_args()
     if not FLAGS.input_file:
         print("You must enter input file path (-i), Exiting")
         exit()
     if not FLAGS.generate_http and not FLAGS.generate_mqtt:
-        print("Nothing to generate, use -gh true or -gm true, Exiting...")
+        print("Nothing to generate, use -gh or/and -gm, Exiting...")
         exit()
     
-    d=dataGenerator(FLAGS.input_file,FLAGS.http_output_file,FLAGS.mqtt_output_file,FLAGS.generate_http,FLAGS.generate_mqtt)
+    d=dataGenerator(FLAGS.input_file,FLAGS.http_output_file,FLAGS.mqtt_output_file,FLAGS.generate_http,FLAGS.generate_mqtt,FLAGS.random)
+    
+    if FLAGS.plot:
+        show_plots(d.getPlotData())
+
