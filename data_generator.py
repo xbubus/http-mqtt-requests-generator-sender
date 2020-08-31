@@ -151,7 +151,7 @@ if __name__ =='__main__':
     parser.add_argument('-oh','--http-output-file',type=str,default="http_out.json",help="JSON output file with http requests")
     parser.add_argument('-om','--mqtt-output-file',type=str,default="mqtt_out.json",help="JSON output file with mqtt requests")
     parser.add_argument('-p','--plot',action='store_true',help="Show plots")
-    parser.add_argument('-r','--random',type=int,default=0,help="Randomize requests output by given number (-r 5 = +-[0,5]%)")
+    parser.add_argument('-r','--random',type=int,default=0,help="Randomize requests output by given number (-r 5 = +-[0,5]%%)")
 
     FLAGS,unparsed=parser.parse_known_args()
     if not FLAGS.input_file:
