@@ -26,6 +26,8 @@ class Requester():
     def addTasks(self):
         
         for key,value in self.data.items():
+            if key!=key: #NaN
+                continue
             try:
                 while float(key)>=t.time()-self.startingTime:
                     pass

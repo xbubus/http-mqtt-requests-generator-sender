@@ -1,95 +1,117 @@
 {
-"http_tasks":[
-{
-	"url":"http://127.0.0.1:1880/test1",
-	"method": "GET",
-	"time":1800, 
-	"tasks":5000,
-	"mi":1,
-	"sigma":2,
-	"headers":{
-	"Connection": "keep-alive",
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip,deflate,sdch",
-    "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
-	},
-	"body":{  
-    "test":"TEST",
-    "user:":"admin",
-    "passwd":"admin"
-	}
-},
-
-{
-	"url":"http://127.0.0.1:1880/test3",
-	"method": "POST",
-	"time":2400, 
-	"tasks":6000,
-	"mi":0,
-	"sigma":2,
-	"headers":{
-	"Connection": "keep-alive",
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip,deflate,sdch",
-    "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
-	},
-	"body":{  
-    "test":"TEST",
-    "user:":"admin",
-    "passwd":"admin"
-	}
-},
-{
-	"url":"http://127.0.0.1:1880/test2",
-	"method": "DELETE",
-	"time":1000, 
-	"tasks":4000,
-	"mi":1,
-	"sigma":2,
-	"headers":{
-	"Connection": "keep-alive",
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip,deflate,sdch",
-    "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
-	},
-	"body":{  
-    "test":"TEST",
-    "user:":"admin",
-    "passwd":"admin"
-	}
-}
-],
-"mqtt_tasks":[
+	"http_tasks":[
 	{
-		"url":"localhost",
-		"topic":"sim",
-		"port":1883,
-		"username":"admin",
-		"password":"admin",
+		"url":"http://127.0.0.1:1880/test1",
+		"method": "GET",
+		"time":1000, 
+		"tasks":5000,
+		"mi":3,
+		"sigma":2,
+		"headers":{
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Accept": "*/*",
+		"Accept-Encoding": "gzip,deflate,sdch",
+		"Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
+		},
+		"body":{  
+		"test":"TEST",
+		"user:":"admin",
+		"passwd":"admin"
+		}
+	},
+	
+	{
+		"url":"http://127.0.0.1:1880/test2",
+		"method": "GET",
 		"time":3600, 
 		"tasks":20000,
 		"mi":0,
 		"sigma":2,
-		"msg":"hi!"
+		"headers":{
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Accept": "*/*",
+		"Accept-Encoding": "gzip,deflate,sdch",
+		"Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
+		},
+		"body":{  
+		"test":"TEST",
+		"user:":"admin",
+		"passwd":"admin"
+		}
 	},
-
 	{
-		"url":"localhost",
-		"topic":"sim2",
-		"port":1883,
-		"username":"admin",
-		"password":"admin",
-		"time":1800, 
-		"tasks":10000,
-		"mi":0,
-		"sigma":2,
-		"msg":"hello!"
+		"url":"http://127.0.0.1:1880/test3",
+		"method": "POST",
+		"time":3600, 
+		"tasks":30000,
+		"mi":6,
+		"sigma":1,
+		"headers":{
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Accept": "*/*",
+		"Accept-Encoding": "gzip,deflate,sdch",
+		"Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
+		},
+		"body":{  
+		"test":"TEST",
+		"user:":"admin",
+		"passwd":"admin"
+		}
 	}
-]
-}
+	],
+	"mqtt_tasks":[
+		{
+			"url":"localhost",
+			"topic":"sim",
+			"port":1883,
+			"username":"admin",
+			"password":"admin",
+			"time":3600, 
+			"tasks":20000,
+			"mi":0,
+			"sigma":2,
+			"msg":"hi!"
+		},
+	
+		{
+			"url":"localhost",
+			"topic":"sim2",
+			"port":1883,
+			"username":"admin",
+			"password":"admin",
+			"time":1800, 
+			"tasks":10000,
+			"mi":0,
+			"sigma":2,
+			"msg":"hello!"
+		}
+	],
+	"ssh_tasks":[
+		{
+			"host":"test.rebex.net",
+			"port":22,
+			"username":"demo",
+			"password":"password",
+			"time":3600, 
+			"tasks":2000,
+			"mi":0,
+			"sigma":1
+		},
+		{
+			"host":"test.rebex.net",
+			"port":22,
+			"username":"demo",
+			"password":"password",
+			"time":1600, 
+			"tasks":200,
+			"mi":-3,
+			"sigma":1
+		}
+	]
+	}
