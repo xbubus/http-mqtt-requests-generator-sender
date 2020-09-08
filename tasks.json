@@ -113,5 +113,30 @@
 			"mi":-3,
 			"sigma":1
 		}
-	]
+	],
+	"sql_tasks":[
+	{
+		"host":"192.168.41.3",
+		"port":3306,
+		"user":"user2",
+		"password":"password2",
+		"query":"",
+		"time":3600, 
+		"tasks":20000,
+		"mi":0,
+		"sigma":6
 	}
+	],
+	"ftp_tasks":[
+	{
+		"host":"ftp.pureftpd.org",
+		"user":"",
+		"password":"",
+		"time":3600, 
+		"tasks":40000,
+		"mi":0,
+		"sigma":4
+		
+	}
+	]
+}
