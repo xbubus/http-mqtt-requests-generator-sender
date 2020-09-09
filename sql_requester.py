@@ -55,6 +55,7 @@ class SQLPublisher():
                 data=self.queue.get()           
                 task=self.taskNumber
                 self.taskNumber+=1
+                currTime=t.time()
                 mydb = mysql.connector.connect(
                 host=data["host"],
                 user= data["username"],
@@ -64,8 +65,8 @@ class SQLPublisher():
                 if data["query"]:
                     mycursor = mydb.cursor()
                     mycursor.execute(data["query"])
-             
-                print("Task: ",task," Time elapsed: %.3f"%(t.time()-self.startingTime))
+                delay=(t.time()-currTime)*1000 
+                print("Task: ",task," Time elapsed: %.3f"%(t.time()-self.startingTime),"s Delay: %.2f"%delay,"ms")
                 self.queue.task_done()
             except Exception as e:
                 print("Something went wrong! ",e)   

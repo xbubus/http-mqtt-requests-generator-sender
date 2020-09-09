@@ -55,6 +55,7 @@ class SSHPublisher():
                 data=self.queue.get()           
                 task=self.taskNumber
                 self.taskNumber+=1
+                currTime=t.time()
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 ssh.connect(data["host"], data["port"], data["username"], data["password"])
@@ -62,8 +63,8 @@ class SSHPublisher():
                 #lines = stdout.readlines()
                 #print(lines)     
                 stdin, stdout, stderr = ssh.exec_command("exit")
-             
-                print("Task: ",task," Time elapsed: %.3f"%(t.time()-self.startingTime))
+                delay=(t.time()-currTime)*1000 
+                print("Task: ",task," Time elapsed: %.3f"%(t.time()-self.startingTime),"s Delay: %.2f"%delay,"ms")
                 self.queue.task_done()
             except Exception as e:
                 print("Something went wrong! ",e)   

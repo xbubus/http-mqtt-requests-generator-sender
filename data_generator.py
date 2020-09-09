@@ -8,54 +8,50 @@ import argparse
 
 class dataGenerator():
 
-    def __init__(self,filename,http_out,mqtt_out,ssh_out,sql_out,ftp_out,http=False,mqtt=False,ssh=False,sql=False,ftp=False,rand=0):
-        self.loadTasks(filename)
+    def __init__(self,FLAGS):
+        self.loadTasks(FLAGS.input_file)
         self.http_plot=[]
         self.mqtt_plot=[]
         self.ssh_plot=[]
         self.sql_plot=[]
         self.ftp_plot=[]
         self.data={}
-        self.rand=rand
+        self.rand=FLAGS.random
         self.randData=[]
-        if rand:
+        self.initArgs(FLAGS)
+        if self.rand:
             self.generateRandomData()
-        if http:
-            self.generate(http=True)
-            self.merged=self.mergeData(self.getTasks()[0])
-            self.sort(self.merged)
-            self.save(http_out)
-        if mqtt:
-            self.generate(mqtt=True)
-            self.merged=self.mergeData(self.getTasks()[1])
-            self.sort(self.merged)
-            self.save(mqtt_out)
-        if ssh:
-            self.generate(ssh=True)
-            self.merged=self.mergeData(self.getTasks()[2])
-            self.sort(self.merged)
-            self.save(ssh_out)
-        if sql:
-            self.generate(sql=True)
-            self.merged=self.mergeData(self.getTasks()[3])
-            self.sort(self.merged)
-            self.save(sql_out)
-        if ftp:
-            self.generate(ftp=True)
-            self.merged=self.mergeData(self.getTasks()[4])
-            self.sort(self.merged)
-            self.save(ftp_out)
+        self.generate()
+            
+    def initArgs(self,ARGS):
+        argsDict= FLAGS.__dict__
+        try:
+            self.http=argsDict["generate_http"]
+            self.mqtt=argsDict["generate_mqtt"]
+            self.ssh=argsDict["generate_ssh"]
+            self.sql=argsDict["generate_sql"]
+            self.ftp=argsDict["generate_ftp"]
+            self.http_out=argsDict["http_output_file"]
+            self.mqtt_out=argsDict["mqtt_output_file"]
+            self.ssh_out=argsDict["ssh_output_file"]
+            self.sql_out=argsDict["sql_output_file"]
+            self.ftp_out=argsDict["ftp_output_file"]
+        except Exception as e:
+            print(e)
+            print("Criticall error, Exiting...")
+            exit(0)
+
     def loadTasks(self,filename):
         with open(filename,'r') as f:
             self.fulldata=json.load(f)
              
-    def generate(self,http=False,mqtt=False,ssh=False,sql=False,ftp=False):
+    def generate(self):
         self.httpTasks=[]
         self.mqttTasks=[]
         self.sshTasks=[]
         self.sqlTasks=[]
         self.ftpTasks=[]
-        if http:
+        if self.http:
             self.rOff=0
             for d in self.fulldata["http_tasks"]:
                 self.data=d
@@ -67,8 +63,10 @@ class dataGenerator():
                 self.generateRequestsData(self.mappedX,self.mappedY)
                 self.httpTasks.append(self.dictR)
                 self.rOff+=1
-
-        if mqtt:
+            self.merged=self.mergeData(self.httpTasks)
+            self.sort(self.merged)
+            self.save(self.http_out)
+        if self.mqtt:
             self.mOff=0
             for d in self.fulldata["mqtt_tasks"]:
                 self.data=d
@@ -80,7 +78,10 @@ class dataGenerator():
                 self.generateMQTTdata(self.mappedX,self.mappedY)
                 self.mqttTasks.append(self.dictM)
                 self.mOff+=1
-        if ssh:
+            self.merged=self.mergeData(self.mqttTasks)
+            self.sort(self.merged)
+            self.save(self.mqtt_out)
+        if self.ssh:
             self.sOff=0
             for d in self.fulldata["ssh_tasks"]:
                 self.data=d
@@ -92,7 +93,10 @@ class dataGenerator():
                 self.generateSSHdata(self.mappedX,self.mappedY)
                 self.sshTasks.append(self.dictS)
                 self.sOff+=1
-        if sql:
+            self.merged=self.mergeData(self.sshTasks)
+            self.sort(self.merged)
+            self.save(self.ssh_out)
+        if self.sql:
             self.sqOff=0
             for d in self.fulldata["sql_tasks"]:
                 self.data=d
@@ -104,7 +108,10 @@ class dataGenerator():
                 self.generateSQLdata(self.mappedX,self.mappedY)
                 self.sqlTasks.append(self.dictSQ)
                 self.sqOff+=1
-        if ftp:
+            self.merged=self.mergeData(self.sqlTasks)
+            self.sort(self.merged)
+            self.save(self.sql_out)
+        if self.ftp:
             self.fOff=0
             for d in self.fulldata["ftp_tasks"]:
                 self.data=d
@@ -116,6 +123,9 @@ class dataGenerator():
                 self.generateFTPdata(self.mappedX,self.mappedY)
                 self.ftpTasks.append(self.dictF)
                 self.fOff+=1
+            self.merged=self.mergeData(self.ftpTasks)
+            self.sort(self.merged)
+            self.save(self.ftp_out)
     def getTasks(self):
         return self.httpTasks,self.mqttTasks,self.sshTasks,self.sqlTasks,self.ftpTasks
     def printNumOfReq(self):
@@ -178,7 +188,7 @@ class dataGenerator():
         for i in range(len(x)):
             self.dictF[x[i]+0.001*self.fOff]={"numberOfTasks":y[i],"host":self.data["host"],"username":self.data["user"],"password":self.data["password"]}
     
-    def mergeData(self,data): #http
+    def mergeData(self,data): 
         merged={}
         for d in data:
             merged={**merged,**d}
@@ -210,8 +220,6 @@ def show_plots(data):
     ssh=data[2]
     sql=data[3]
     ftp=data[4]
-    #print(type(sql))
-    #print(type(http))
     httpSize=0
     mqttSize=0
     sshSize=0
@@ -311,7 +319,7 @@ if __name__ =='__main__':
         print("Nothing to generate, use -gh or/and -gm -gs -gsq -gf, Exiting...")
         exit()
     
-    d=dataGenerator(FLAGS.input_file,FLAGS.http_output_file,FLAGS.mqtt_output_file,FLAGS.ssh_output_file,FLAGS.sql_output_file,FLAGS.ftp_output_file,FLAGS.generate_http,FLAGS.generate_mqtt,FLAGS.generate_ssh,FLAGS.generate_sql,FLAGS.generate_ftp,FLAGS.random)
+    d=dataGenerator(FLAGS)
     
     if FLAGS.plot:
         show_plots(d.getPlotData())
