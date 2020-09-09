@@ -56,7 +56,7 @@ class FTPPublisher():
                 task=self.taskNumber
                 self.taskNumber+=1
                 currTime=t.time() 
-                ftp = FTP('ftp.pureftpd.org')
+                ftp = FTP(data["host"])
                 if data["username"]:
                     ftp.login(data["username"],data["password"])
                 else: ftp.login()   
