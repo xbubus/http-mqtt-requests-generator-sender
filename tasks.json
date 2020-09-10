@@ -26,9 +26,9 @@
 		"url":"http://127.0.0.1:1880/test2",
 		"method": "GET",
 		"time":3600, 
-		"tasks":20000,
-		"mi":0,
-		"sigma":2,
+		"tasks":15000,
+		"mi":-1,
+		"sigma":4,
 		"headers":{
 		"Connection": "keep-alive",
 		"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5",
@@ -47,7 +47,7 @@
 		"url":"http://127.0.0.1:1880/test3",
 		"method": "POST",
 		"time":3600, 
-		"tasks":30000,
+		"tasks":10000,
 		"mi":6,
 		"sigma":1,
 		"headers":{
@@ -73,9 +73,9 @@
 			"username":"admin",
 			"password":"admin",
 			"time":3600, 
-			"tasks":20000,
-			"mi":0,
-			"sigma":2,
+			"tasks":10000,
+			"mi":2,
+			"sigma":3,
 			"msg":"hi!"
 		},
 	
@@ -107,7 +107,7 @@
 			"host":"test.rebex.net",
 			"port":22,
 			"username":"demo",
-			"password":"password",
+			"password":"wrong_password",
 			"time":1600, 
 			"tasks":200,
 			"mi":-8,
@@ -120,7 +120,7 @@
 		"port":3306,
 		"user":"user2",
 		"password":"password2",
-		"query":"",
+		"query":"invalid query",
 		"time":3600, 
 		"tasks":20000,
 		"mi":0,
@@ -129,11 +129,21 @@
 	],
 	"ftp_tasks":[
 	{
-		"host":"ftp.pureftpd.org",
+		"host":"invalidhost.asdf.com",
 		"user":"",
 		"password":"",
 		"time":3600, 
 		"tasks":40000,
+		"mi":0,
+		"sigma":4
+		
+	},
+	{
+		"host":"ftp.pureftpd.org",
+		"user":"",
+		"password":"",
+		"time":3600, 
+		"tasks":10,
 		"mi":0,
 		"sigma":4
 		

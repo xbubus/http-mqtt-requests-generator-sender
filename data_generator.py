@@ -23,8 +23,8 @@ class dataGenerator():
             self.generateRandomData()
         self.generate()
             
-    def initArgs(self,ARGS):
-        argsDict= FLAGS.__dict__
+    def initArgs(self,args):
+        argsDict=args.__dict__
         try:
             self.http=argsDict["generate_http"]
             self.mqtt=argsDict["generate_mqtt"]
@@ -45,7 +45,7 @@ class dataGenerator():
         with open(filename,'r') as f:
             self.fulldata=json.load(f)
              
-    def generate(self):
+    def generate(self): #todo: rewrite this 
         self.httpTasks=[]
         self.mqttTasks=[]
         self.sshTasks=[]
@@ -214,85 +214,33 @@ class dataGenerator():
             for _ in np.arange(0.00001,yAxis[i],0.001):
                  self.randData.append(xAxis[i])
         print(self.randData)
+
+def show_one_plot(data,size):
+    if size:
+        fig,axs = plt.subplots(size,1,sharex=True,sharey=True)
+        i=0
+        if size==1:
+            axs.plot(data[0][0],data[0][1])
+            axs.set_title(data[0][2],fontsize=5)
+        else: 
+            for d in data:
+                axs[i].plot(d[0],d[1])
+                axs[i].set_title(d[2],fontsize=5)
+                i+=1
+    
 def show_plots(data):
-    http=data[0]
-    mqtt=data[1]
-    ssh=data[2]
-    sql=data[3]
-    ftp=data[4]
-    httpSize=0
-    mqttSize=0
-    sshSize=0
-    sqlSize=0
-    ftpSize=0
-    for _ in http:  httpSize+=1
-    for _ in mqtt: mqttSize+=1
-    for _ in ssh: sshSize+=1
-    for _ in sql: sqlSize+=1
-    for _ in ftp: ftpSize+=1
-    if not httpSize and not mqttSize and not sshSize and not sqlSize and not ftpSize: 
+    sizes=[]
+    count=0
+    for d in data:
+        size=0
+        for _ in d: size+=1
+        sizes.append(size)
+        count+=size
+    if not count: 
         print("Nothing to show on plot")
         return
-    if httpSize:
-        fig1,axs = plt.subplots(httpSize,1,sharex=True,sharey=True)
-        i=0
-        if httpSize==1:
-            axs.plot(http[0][0],http[0][1])
-            axs.set_title(http[0][2],fontsize=5)
-        else: 
-            for d in http:
-                axs[i].plot(d[0],d[1])
-                s=0
-                axs[i].set_title(d[2],fontsize=5)
-                i+=1
-    if mqttSize:
-        fig2,axs = plt.subplots(mqttSize,1,sharex=True,sharey=True)
-        i=0
-        if mqttSize==1:
-            axs.plot(mqtt[0][0],mqtt[0][1])
-            axs.set_title(mqtt[0][2],fontsize=5)
-        else: 
-            for d in mqtt:
-                axs[i].plot(d[0],d[1])
-                s=0
-                axs[i].set_title(d[2],fontsize=5)
-                i+=1
-    if sshSize:
-        fig3,axs = plt.subplots(sshSize,1,sharex=True,sharey=True)
-        i=0
-        if sshSize==1:
-            axs.plot(ssh[0][0],ssh[0][1])
-            axs.set_title(ssh[0][2],fontsize=5)
-        else: 
-            for d in ssh:
-                axs[i].plot(d[0],d[1])
-                s=0
-                axs[i].set_title(d[2],fontsize=5)
-                i+=1
-    if sqlSize:
-        fig4,axs = plt.subplots(sqlSize,1,sharex=True,sharey=True)
-        i=0
-        if sqlSize==1:
-            axs.plot(sql[0][0],sql[0][1])
-            axs.set_title(sql[0][2],fontsize=5)
-        else:    
-            for d in sql:
-                axs[i].plot(d[0],d[1])
-                s=0
-                axs[i].set_title(d[2],fontsize=5)
-                i+=1
-    if ftpSize:
-        fig5,axs = plt.subplots(ftpSize,1,sharex=True,sharey=True)
-        i=0
-        if ftpSize==1:
-            axs.plot(ftp[0][0],ftp[0][1])
-            axs.set_title(ftp[0][2],fontsize=5)
-        else:
-            for d in ftp:
-                axs[i].plot(d[0],d[1])
-                s=0
-                axs[i].set_title(d[2],fontsize=5)
-                i+=1
+    for i,d in enumerate(data):
+        show_one_plot(d,sizes[i])
     plt.show()
 
 if __name__ =='__main__':
